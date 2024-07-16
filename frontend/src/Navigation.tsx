@@ -1,12 +1,10 @@
-import { useState, useEffect, useContext } from 'react'
-import { useHistory } from "react-router";
-import { CurrentUser } from './contexts/CurrentUser';
+import React, { useContext } from "react";
+import { useHistory } from "react-router-dom";
+import { useCurrentUser } from "./contexts/CurrentUser"; 
 
 function Navigation() {
-
-    const history = useHistory()
-
-    const { currentUser } = useContext(CurrentUser)
+    const history = useHistory();
+    const { currentUser } = useCurrentUser(); 
 
     let loginActions = (
         <>
@@ -21,14 +19,14 @@ function Navigation() {
                 </a>
             </li>
         </>
-    )
+    );
 
     if (currentUser) {
         loginActions = (
             <li style={{ float: 'right' }}>
-                Logged in as {currentUser.firstName} {currentUser.lastName}
+                Logged in as {currentUser.name} {/* Adjust according to your User interface */}
             </li>
-        )
+        );
     }
 
     return (
@@ -52,7 +50,7 @@ function Navigation() {
                 {loginActions}
             </ul>
         </nav>
-    )
+    );
 }
 
 export default Navigation;

@@ -1,53 +1,59 @@
-import { useState, useEffect } from "react"
-import { useHistory, useParams } from "react-router"
+import React, { useState, ChangeEvent, FormEvent } from "react";
+import { useHistory } from "react-router";
 
-function EditPlaceForm() {
+interface Place {
+	name: string;
+	pic: string;
+	city: string;
+	state: string;
+	cuisines: string;
+	founded: string; 
+}
 
-	const history = useHistory()
+function NewPlaceForm() {
+	const history = useHistory();
 
-    const { placeId } = useParams()
-
-    const [place, setPlace] = useState({
+	const [place, setPlace] = useState<Place>({
 		name: '',
 		pic: '',
 		city: '',
 		state: '',
-		cuisines: ''
-	})
+		cuisines: '',
+		founded: '', 
+	});
 
-	useEffect(() => {
-		const fetchData = async () => {
-			const response = await fetch(`http://localhost:5000/places/${placeId}`)
-			const resData = await response.json()
-			setPlace(resData)
-		}
-		fetchData()
-	}, [ placeId ])
+	async function handleSubmit(e: FormEvent<HTMLFormElement>) {
+		e.preventDefault();
 
-	async function handleSubmit(e) {
-		e.preventDefault()
-
-		await fetch(`http://localhost:5000/places/${place.placeId}`, {
-			method: 'PUT',
+		await fetch(`http://localhost:5000/places`, {
+			method: 'POST',
 			headers: {
-				'Content-Type': 'application/json'
+				'Content-Type': 'application/json',
 			},
-			body: JSON.stringify(place)
-		})
+			body: JSON.stringify(place),
+		});
 
-		history.push(`/places/${place.placeId}`)
+		history.push('/places');
+	}
+
+	function handleChange(e: ChangeEvent<HTMLInputElement>) {
+		const { name, value } = e.target;
+		setPlace((prevPlace) => ({
+			...prevPlace,
+			[name]: value,
+		}));
 	}
 
 	return (
 		<main>
-			<h1>Edit Place</h1>
+			<h1>Add a New Place</h1>
 			<form onSubmit={handleSubmit}>
 				<div className="form-group">
 					<label htmlFor="name">Place Name</label>
 					<input
 						required
 						value={place.name}
-						onChange={e => setPlace({ ...place, name: e.target.value })}
+						onChange={handleChange}
 						className="form-control"
 						id="name"
 						name="name"
@@ -58,7 +64,7 @@ function EditPlaceForm() {
 					<input
 						required
 						value={place.founded}
-						onChange={e => setPlace({ ...place, founded: e.target.value })}
+						onChange={handleChange}
 						className="form-control"
 						id="founded"
 						name="founded"
@@ -68,7 +74,7 @@ function EditPlaceForm() {
 					<label htmlFor="pic">Place Picture</label>
 					<input
 						value={place.pic}
-						onChange={e => setPlace({ ...place, pic: e.target.value })}
+						onChange={handleChange}
 						className="form-control"
 						id="pic"
 						name="pic"
@@ -78,7 +84,7 @@ function EditPlaceForm() {
 					<label htmlFor="city">City</label>
 					<input
 						value={place.city}
-						onChange={e => setPlace({ ...place, city: e.target.value })}
+						onChange={handleChange}
 						className="form-control"
 						id="city"
 						name="city"
@@ -88,7 +94,7 @@ function EditPlaceForm() {
 					<label htmlFor="state">State</label>
 					<input
 						value={place.state}
-						onChange={e => setPlace({ ...place, state: e.target.value })}
+						onChange={handleChange}
 						className="form-control"
 						id="state"
 						name="state"
@@ -98,14 +104,17 @@ function EditPlaceForm() {
 					<label htmlFor="cuisines">Cuisines</label>
 					<input
 						value={place.cuisines}
-						onChange={e => setPlace({ ...place, cuisines: e.target.value })}
+						onChange={handleChange}
 						className="form-control"
-						id="cuisines" name="cuisines" required />
+						id="cuisines"
+						name="cuisines"
+						required
+					/>
 				</div>
-				<input className="btn btn-primary" type="submit" value="Save" />
+				<input className="btn btn-primary" type="submit" value="Add Place" />
 			</form>
 		</main>
-	)
+	);
 }
 
-export default EditPlaceForm
+export default NewPlaceForm;
