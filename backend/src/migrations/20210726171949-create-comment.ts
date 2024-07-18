@@ -1,6 +1,8 @@
 'use strict';
+import { QueryInterface, DataTypes } from 'sequelize';
+
 module.exports = {
-  up: async (queryInterface, Sequelize) => {
+  up: async (queryInterface: QueryInterface, Sequelize: typeof DataTypes) => {
     await queryInterface.createTable('comments', {
       comment_id: {
         allowNull: false,
@@ -33,7 +35,7 @@ module.exports = {
       }
     });
   },
-  down: async (queryInterface, Sequelize) => {
+  down: async (queryInterface: QueryInterface, Sequelize: typeof DataTypes) => {
     await queryInterface.dropTable('comments');
   }
 };
